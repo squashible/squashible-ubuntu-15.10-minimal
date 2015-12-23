@@ -1,0 +1,27 @@
+---
+language: python
+python: "2.7"
+sudo: required
+dist: trusty
+env:
+  global:
+  - secure: "9nIcClNpIndLP98ruCdvRPzb8HiZchRtCfANJryrGBYQEse+MGOMTmL3xmipu/zJ0PjGZa27yYDVk3B56omJ1Lz+IszlsWZ3HZ0yOn6lzKySMI/OuNzbUr4wbQfCU68XRQRrL6qyHwilgFOk+U/d0lJL0PKyM86EQQzi+fdrJEPWFVRTxTIV4jiq+eag8qiqhTNeGFlWDbeE2DfP/r+C6ZYPeiEoq8pTX+XqkPHE9mhdnMdAIS2ljF1k1JHERfop9oUNxaTUQIkOylpMvkPwcf1qBU6JfpG1WxXEoXTBjZiz6+FMHRHQjobbgZOgrcf/pn+oIec9zKR2xMbbpJdPmAeGp4uWqdovE59bClG3qnNyc6bvM5Hazm7guvej9lztCViJPhGFRdA5YYpRSJiUBlLVZYxCgaNTmIiukOid9isAUDx2Q1TJBWxtBlHqxENcS/EbglGk0Hq0+WvBC5iTM0OeMX+FKC7P3FSPAfiV+G9y7is/dEmFwReQpny4SRfIzaxdHmHKRSVjChjyFuXt0GnuZTOyVUphCMRtwQgv7uuqXkMh5xFMv+aQDiSBhibcZ12yyRHa6snizW7272TD3iEP7mtNm4Snle2N6dEtIlzjXZ9v2MJUd3jrROk5oSuaAox5/vlAwP6LIR6NBK4kgnH9mvGbftArMPyYw9oPXS4="
+  - secure: "VjGC4cTo0vvK6LHbXLgUJ0CyZYdOgqah3WjvF/5g80W8SbhxFg1QD3t4oql/10W7A9UG62+5q1AkXe5Z7zq7QsL9/SSynhRnDVX1y7OzYZCgYarf5YwaphKz+MO3Wo1LUnqjPOMNiv2Vywh9XEKgwYsC75rUPkVWEFbj9IxtKrY/tg301UXq9GrEsFegjd8dY+YcmWCYQKhNbt2qeC8xwyx8SYM/vSLYE3CxI5d0xxaIgdV9vhh6jXysNWO8pCOiSkFvkfulxVoqVYw9yl55qrEZyh3TXG9vGGuBdhyWin0v0E8Ak+SnuIiCx8kku8CO4MyPBZ533tE9eW/ZirT5pCoqfWbplIR21G7aF2SxAGvaTlybPkZEL3OxbRZRs7JJETwGJh5qBzJdhnbZ0+7WcW5faHv09hB+By/z0Gj2suKJWcnRCciNrc93dt244ZLP/k2rJVDLpB+c39OzAbLvxPkAyTh6PTzAGoR3W/1wO4Ibruiw8ydAoQlQ2DWo8GksOOZmoD7JfvczP9aaXcijumiCYJWXN9ps0icA5LFlZpr2cZBtreVn5vg1yVU/Cq9tjjPB5LxEUEhyATL2cvRcQTyGPw2URbnT5iuLOREdggfqtG9WtxGpQN9HIpjxA6Y5ZUOk2epIJJHVV5QSTYTabFH9UYlneUVqLBvYluL/Lfk="
+git:
+  submodules: false
+before_install:
+ - git submodule update --init --recursive
+ - git submodule foreach git pull origin master
+ - sudo apt-get update -qq
+ - sudo apt-get install -qq squashfs-tools uuid python-apt python-pycurl btrfs-tools
+install:
+ - sudo pip install ansible
+ - sudo pip install docker-py
+script:
+- cd squashible
+- sudo ansible-playbook -i hosts_generator.py squashible.yml -e "live_os=ubuntu_15.10"
+- ls -lah live_output
+- sudo chown -R travis:travis live_output
+- cd live_output
+after_success:
+    "curl --ftp-create-dirs -T '{vmlinuz,initrd.img,filesystem.squashfs}' -u $FTP_USER:$FTP_PASSWORD ftp://images.squashible.com/images/squashible-ubuntu-15.10-minimal/"
