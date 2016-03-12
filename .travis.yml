@@ -19,9 +19,9 @@ install:
  - sudo pip install docker-py
 script:
 - cd squashible
-- sudo ansible-playbook -i hosts_generator.py squashible.yml -e "live_os=ubuntu_16.04"
+- sudo ansible-playbook -i hosts_generator.py squashible.yml -e "live_os=ubuntu_15.10"
 - ls -lah live_output
 - sudo chown -R travis:travis live_output
 - cd live_output
 after_success:
-    "curl --ftp-create-dirs -T '{vmlinuz,initrd.img,rootfs.img}' -u $FTP_USER:$FTP_PASSWORD ftp://images.squashible.com/images/squashible-ubuntu-16.04-minimal/"
+    "curl --ftp-create-dirs -T '{vmlinuz,initrd.img,rootfs.img}' -u $FTP_USER:$FTP_PASSWORD ftp://images.squashible.com/images/squashible-ubuntu-15.10-minimal/"
