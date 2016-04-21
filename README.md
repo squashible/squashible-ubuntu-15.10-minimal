@@ -1,3 +1,3 @@
-squashible-ubuntu-15.10-minimal builder
+squashible-ubuntu-16.04-minimal builder
 
-[![Build Status](https://travis-ci.org/squashible/squashible-ubuntu-15.10-minimal.svg?branch=master)](https://travis-ci.org/squashible/squashible-ubuntu-15.10-minimal)
+[![Build Status](https://travis-ci.org/squashible/squashible-ubuntu-16.04-minimal.svg?branch=master)](https://travis-ci.org/squashible/squashible-ubuntu-16.04-minimal)
